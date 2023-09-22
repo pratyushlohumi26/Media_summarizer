@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Media Summary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #007BFF;
+        }
+        pre {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Media Summarizer Results</h1>
+    <h2>Full Summary:</h2>
+    <pre>{{ master_summary }}</pre>
+    
+    <h2>Chunked Summary for 15min each:</h2>
+    <ul>
+       {% for chunk_summary in chunk_summaries %}
+            <li>{{ chunk_summary|safe }}</li>
+        {% endfor %}
+    </ul>
+    
+    <h2>Processing Time</h2>
+    <p>Time taken to process the request: {{ processing_time }} seconds</p>
+</body>
+</html>
