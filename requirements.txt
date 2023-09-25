@@ -4,3 +4,4 @@ pydub
 openai 
 moviepy
 waitress
+pandas
