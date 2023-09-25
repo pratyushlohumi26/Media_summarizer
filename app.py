@@ -6,7 +6,7 @@ from moviepy.editor import AudioFileClip, VideoFileClip
 from waitress import serve
 import pandas as pd
 # Set up your OpenAI API key
-openai.api_key = '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'
+openai.api_key = 'YOUR_API_KEY'
 
 app = Flask(__name__)
 
