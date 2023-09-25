@@ -3,9 +3,7 @@ import time
 from flask import Flask, request, render_template, redirect, url_for
 import openai
 from moviepy.editor import AudioFileClip, VideoFileClip
-# from moviepy.editor import 
-# from whisper import Transcriber
-
+from waitress import serve
 # Set up your OpenAI API key
 openai.api_key = 'YOUR_API_KEY'
 
@@ -176,8 +174,9 @@ def summarize_text(text, prompt, model="gpt-3.5-turbo"):
     return summary
 
 if __name__ == "__main__":
-    app.debug = True  # Set the debug mode directly on the app object
-    app.port=5000
-    app.host='0.0.0.0'
-    app.threaded=True
-    app.run()
+    # app.debug = True  # Set the debug mode directly on the app object
+    # app.port=5000
+    # app.host='0.0.0.0'
+    # app.threaded=True
+    # app.run()
+    serve(app, host='0.0.0.0', port=5000)
