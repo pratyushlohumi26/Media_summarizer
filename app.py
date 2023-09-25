@@ -4,8 +4,9 @@ from flask import Flask, request, render_template, redirect, url_for
 import openai
 from moviepy.editor import AudioFileClip, VideoFileClip
 from waitress import serve
+import pandas as pd
 # Set up your OpenAI API key
-openai.api_key = 'YOUR_API_KEY'
+openai.api_key = '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'
 
 app = Flask(__name__)
 
@@ -35,6 +36,7 @@ def upload_file():
     if file:
         filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(filename)
+        
 
         # Check the file extension to determine if it's an MP3 or MP4 file
         file_extension = os.path.splitext(filename)[1].lower()
@@ -73,6 +75,7 @@ def upload_file():
             end_time = time.time()  # End timing the request processing
             processing_time = end_time - start_time
             print(f"Processing time: {processing_time:.2f} seconds")
+            save_in_csv(filename, summaries, master_summary)
             return render_template('result.html', master_summary=master_summary, chunk_summaries=summaries, processing_time=processing_time)
 
         elif file_extension == '.mp4':
@@ -106,17 +109,38 @@ def upload_file():
                                 """
             # Create a short summary of all the chunk summaries using GPT-3.5-turbo
             master_summary = summarize_text("\n".join(summaries), system_prompt_tldr)
-            
+            save_in_csv(filename, summaries, master_summary)
             end_time = time.time()  # End timing the request processing
             processing_time = end_time - start_time
-            print(f"Processing time: {processing_time:.2f} seconds")
-
+            
             return render_template('result.html', master_summary=master_summary, chunk_summaries=summaries, processing_time=processing_time)
 
         else:
             # Handle unsupported file types
             return "Unsupported file format."
-        
+
+def save_in_csv(filename, summaries, master_summary):
+    # Check if "summary.csv" file exists in the current directory
+    if os.path.isfile("master_summary.csv"):
+        # If the file exists, read it into a DataFrame
+        summary_csv = pd.read_csv('./master_summary.csv')
+        print("Existing 'summary.csv' file loaded.")
+    else:
+        # If the file doesn't exist, create a new DataFrame
+        summary_csv = pd.DataFrame(columns=['title','chunk_summary','short_summary'])
+        summary_csv.to_csv("master_summary.csv", index=False)
+
+        print("New 'master_summary.csv' file created.")
+
+
+
+    data = {'title':filename, 'chunk_summary':summaries, 'short_summary':master_summary}
+    new_row = pd.DataFrame([data])
+    summary_csv = pd.concat([summary_csv, new_row], axis=0, ignore_index=True)
+
+    summary_csv[["title", "chunk_summary", "short_summary"]].to_csv("./master_summary.csv", mode='w', index=False)
+    print("FINAL Summary created :: ", summary_csv)
+    
 
 def convert_mp4_to_audio(mp4_path):
     # Create the audio directory if it doesn't exist
