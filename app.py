@@ -6,7 +6,7 @@ from moviepy.editor import AudioFileClip, VideoFileClip
 from waitress import serve
 import pandas as pd
 # Set up your OpenAI API key
-openai.api_key = 'YOUR_API_KEY'
+# openai.api_key = 'YOUR_API_KEY'
 
 app = Flask(__name__)
 
@@ -34,6 +34,7 @@ def upload_file():
         return redirect(request.url)
 
     if file:
+        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
         filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(filename)
         
@@ -198,9 +199,9 @@ def summarize_text(text, prompt, model="gpt-3.5-turbo"):
     return summary
 
 if __name__ == "__main__":
-    # app.debug = True  # Set the debug mode directly on the app object
-    # app.port=5000
-    # app.host='0.0.0.0'
-    # app.threaded=True
-    # app.run()
-    serve(app, host='0.0.0.0', port=5000)
+    app.debug = True  # Set the debug mode directly on the app object
+    app.port=5000
+    app.host='0.0.0.0'
+    app.threaded=True
+    app.run()
+    # serve(app, host='0.0.0.0', port=5000)
