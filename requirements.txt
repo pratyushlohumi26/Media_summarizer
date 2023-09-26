@@ -5,3 +5,4 @@ openai
 moviepy
 waitress
 pandas
+flask_cors
