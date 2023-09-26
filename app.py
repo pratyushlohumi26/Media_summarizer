@@ -5,10 +5,13 @@ import openai
 from moviepy.editor import AudioFileClip, VideoFileClip
 from waitress import serve
 import pandas as pd
+from flask_cors import CORS, cross_origin
 # Set up your OpenAI API key
 # openai.api_key = 'YOUR_API_KEY'
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Define the directory to store uploaded files
 UPLOAD_FOLDER = 'uploads'
@@ -19,10 +22,12 @@ SEGMENT_FOLDER = 'segments'
 app.config['SEGMENT_FOLDER'] = SEGMENT_FOLDER
 
 @app.route('/')
+@cross_origin()
 def index():
     return render_template('upload.html')
 
 @app.route('/upload', methods=['POST'])
+@cross_origin()
 
 def upload_file():
     if 'file' not in request.files:
